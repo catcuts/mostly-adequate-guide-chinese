@@ -14,6 +14,7 @@ var localStorage = {};
 //  ex1 :: Number -> Number -> Maybe Number
 var ex1 = function(x, y) {
   // write me
+  return Maybe.of(_.add).ap(Maybe.of(x)).ap(Maybe.of(y));
 };
 
 
@@ -22,7 +23,7 @@ var ex1 = function(x, y) {
 // Now write a function that takes 2 Maybe's and adds them. Use liftA2 instead of ap().
 
 //  ex2 :: Maybe Number -> Maybe Number -> Maybe Number
-var ex2 = undefined;
+var ex2 = liftA2(_.add);
 
 
 
