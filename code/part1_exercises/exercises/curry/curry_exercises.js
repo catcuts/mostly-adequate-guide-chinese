@@ -14,7 +14,9 @@ var words = function(str) {
 //==============
 // Use map to make a new words fn that works on an array of strings.
 
-var sentences = undefined;
+var sentences = function(arr) {
+  return arr.map(words);
+};
 
 
 // Exercise 2
