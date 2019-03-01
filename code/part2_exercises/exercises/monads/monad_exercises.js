@@ -18,7 +18,8 @@ var user = {
   }
 };
 
-var ex1 = undefined;
+var ex1 = _.compose(_.chain(safeProp('name')), _.chain(safeProp('street')), safeProp('address'));
+// var ex1 = _.compose(join, _.map(safeProp('name')), join, _.map(safeProp('street')), safeProp('address'));
 
 
 // Exercise 2
@@ -29,6 +30,11 @@ var getFile = function() {
   return new IO(function(){ return __filename; });
 }
 
+var path = require('path');
+var removeDir = function(filename) {
+  return new IO(function(){ return path.basename(filename); })
+}
+
 var pureLog = function(x) {
   return new IO(function(){
     console.log(x);
@@ -36,7 +42,7 @@ var pureLog = function(x) {
   });
 }
 
-var ex2 = undefined;
+var ex2 = _.compose(_.chain(pureLog), _.chain(removeDir), getFile);
 
 
 
@@ -52,6 +58,12 @@ var getPost = function(i) {
   });
 }
 
+var getPostId = function(p) {
+  return new Task(function (rej, res) {
+    res(p.id);
+  });
+}
+
 var getComments = function(i) {
   return new Task(function (rej, res) {
     setTimeout(function () {
@@ -60,13 +72,18 @@ var getComments = function(i) {
   });
 }
 
-var ex3 = undefined;
+var ex3 = _.compose(_.chain(getComments), _.chain(getPostId), getPost);
 
 
 // Exercise 4
 // ==========
 // Use validateEmail, addToMailingList and emailBlast to implement ex4's type signature.
 // It should safely add a new subscriber to the list, then email everyone with this happy news.
+
+//  chain :: Monad m => (a -> m b) -> m a -> m b
+var chain = _.curry(function(f, m){
+  return _.compose(join, _.map(f))(m)
+});
 
 //  addToMailingList :: Email -> IO [Email]
 var addToMailingList = (function(list){
@@ -91,7 +108,7 @@ var validateEmail = function(x){
 }
 
 //  ex4 :: Email -> Either String (IO String)
-var ex4 = undefined;
+var ex4 = _.compose(either(Left.of, _.compose(_.map(_.compose(_.chain(Right.of), _.chain(emailBlast))), addToMailingList)), validateEmail);
 
 
 module.exports = {ex1: ex1, ex2: ex2, ex3: ex3, ex4: ex4, user: user}

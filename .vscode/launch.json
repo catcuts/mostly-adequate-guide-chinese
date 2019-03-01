@@ -15,7 +15,7 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/code/part2_exercises/exercises/functors/*_spec.js",
+                "${workspaceFolder}/code/part2_exercises/exercises/monads/*_spec.js",
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },
