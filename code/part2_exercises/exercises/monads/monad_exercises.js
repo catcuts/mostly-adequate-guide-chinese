@@ -50,6 +50,14 @@ var ex2 = _.compose(_.chain(pureLog), _.chain(removeDir), getFile);
 // ==========
 // Use getPost() then pass the post's id to getComments().
 
+//  chain :: Monad m => (a -> m b) -> m a -> m b
+var chain = _.curry(function(f, m){
+  let y = _.map(f, m);
+  return y;
+  let x = _.compose(join, _.map(f))(m);
+  return x;
+});
+
 var getPost = function(i) {
   return new Task(function (rej, res) {
     setTimeout(function () {
@@ -80,11 +88,6 @@ var ex3 = _.compose(_.chain(getComments), _.chain(getPostId), getPost);
 // Use validateEmail, addToMailingList and emailBlast to implement ex4's type signature.
 // It should safely add a new subscriber to the list, then email everyone with this happy news.
 
-//  chain :: Monad m => (a -> m b) -> m a -> m b
-var chain = _.curry(function(f, m){
-  return _.compose(join, _.map(f))(m)
-});
-
 //  addToMailingList :: Email -> IO [Email]
 var addToMailingList = (function(list){
   return function(email) {
@@ -108,7 +111,13 @@ var validateEmail = function(x){
 }
 
 //  ex4 :: Email -> Either String (IO String)
-var ex4 = _.compose(either(Left.of, _.compose(_.map(_.compose(_.chain(Right.of), _.chain(emailBlast))), addToMailingList)), validateEmail);
+var ex4 = _.compose(
+  either(
+    Left.of, 
+    _.compose(Right.of, _.chain(emailBlast), addToMailingList)
+  ), 
+  validateEmail
+);
 
 
 module.exports = {ex1: ex1, ex2: ex2, ex3: ex3, ex4: ex4, user: user}
